@@ -59,20 +59,26 @@ Do not use for a production environment.
   and have minimal access privileges. The Nozzle's user needs
   scopes `cloud_controller.admin_read_only` and `doppler.firehose` (older releases without
   `cloud_controller.admin_read_only` would have to use `cloud_controller.admin`).
-  Operators can use the
-  [uaac](https://github.com/cloudfoundry/cf-uaac) tool to create the appropriate user.
-  If left empty, `splunk-firehose` is used.
-  <br/><br/>
-  Credentials **are required** for ERT versions older than v1.8.9 and v1.7.29. <%# Shouldn't this just say ERT versions older than v1.8.9? #%>
-  <br/><br/>
-  The tile fails to install with message `unknown property "splunk_firehose_credentials"...` if configuration is skipped for configuration required versions.
-  <br/><br/>
-  `uaac` commands to add a user:
-      1. `uaac target https://uaa.[system domain url]`
-      1. `uaac token client get admin -s [admin client credentials secret]`
-      1. `uaac -t user add splunk-nozzle --password password123 --emails na`
-      1. `uaac -t member add cloud_controller.admin_read_only splunk-nozzle`
-      1. `uaac -t member add doppler.firehose splunk-nozzle`
+    
+=======
+
+  For ERT versions newer than v1.8.9 and v1.7.29, a `splunk-firehose` user is pre-created. Look up
+  this user by:
+
+  1. Visiting the Pivotal Elastic Runtime tile in Ops Manager
+  1. Clicking the "Credentials" tab
+  1. Under UAA section, retrieve the "Splunk Firehose Credentials"
+
+  Operators can alternately use the
+  [uaac](https://github.com/cloudfoundry/cf-uaac) tool to create the appropriate user. The `uaac`
+  commands to add a user are as follows:
+
+  1. `uaac target https://uaa.[system domain url]`
+  1. `uaac token client get admin -s [admin client credentials secret]`
+  1. `uaac -t user add splunk-nozzle --password password123 --emails na`
+  1. `uaac -t member add cloud_controller.admin_read_only splunk-nozzle`
+  1. `uaac -t member add doppler.firehose splunk-nozzle`
+
   * **Skip SSL validation**: Skip SSL certificate validation for connections to Cloud Foundry. Secure communications will not check SSL certificates against a trusted Certificate Authority.
       Do not use for a production environment.
   * **Event Types**: Choose which events that the Nozzle forwards to the Splunk indexer(s). See
@@ -90,11 +96,11 @@ Do not use for a production environment.
 **4. Advanced**:
     ![Report Example: Cloud Foundry Settings View](images/tile-advanced-settings.png)
 
-  * **Scale Out Nozzle**: Scales out Splunk nozzle. Recommendation: Run 2 or more nozzles for high availability.
-  * **Firehose subscription ID**: The Loggregator will round-robin events across connections
-  with the same id. An operator would need to change this if another connection
-  is using the same default value.
-  * **Additional Fields**: Arbitrary set of key:value pairs in the form `key1:value1,key2:value2,key3:value3` that does not occur in the event payload itself.
+  * **Scale Out Nozzle**: Scale out Splunk Nozzle. Recommendation: run 2 or more nozzles for high availability.
+  * **Firehose Subscription ID**: The Loggregator will round-robin events across connections
+  having the same id. An operator would only need to change this if some other connection
+  is also using the default value.
+  * **Additional Fields**: Arbitrary set of key:value pairs in the form `key1:value1,key2:value2,key3:value3` that do not occur in event payload itself.
   These fields are indexed with every event payload, and are used as metadata for indexing and searching.
   One situation in which this might be useful is differentiating logs from multiple foundations going into the same Splunk Enterprise index.
   * **Add App Information**: When true, the nozzle calls back to the Cloud Foundry API and queries events that
