@@ -11,12 +11,12 @@ The Nozzle subscribes to the Cloud Foundry Loggregator endpoint and writes event
 ![Report Example: Basic Nozzle Architecture](images/overview.png)
 <strong><center>Figure 1: Basic Nozzle Architecture</center></strong>
 
-<strong>Inside each nozzle:</strong><%# Should we change these bullets to numbers#%>
+<strong>Inside each nozzle:</strong>
 
-* A Golang routine collects events from the PCF Loggregator endpoint.
-* An in-memory queue buffers events for availability to multiple Splunk HTTP Event Collector clients.
-* The Splunk HTTP Event Collector clients run with their own Golang routines that consumes events from the queue to enrich PCF events by attaching metadata fields.
-* Finally, the events are batched together and sent to Splunk via the HEC Endpoint.
+1. A Golang routine collects events from the PCF Loggregator endpoint.
+2. An in-memory queue buffers events for availability to multiple Splunk HTTP Event Collector clients.
+3. The Splunk HTTP Event Collector clients run with their own Golang routines that consumes events from the queue to enrich PCF events by attaching metadata fields.
+4. Finally, the events are batched together and sent to Splunk via the HEC Endpoint.
 
 ![Report Example: Internal Nozzle Architecture](images/nozzle-internals-large.png)
 <strong><center>Figure 2: Nozzle Internal Architecture</center></strong>
